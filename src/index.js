@@ -1,39 +1,28 @@
 const express = require('express');
+const { 
+  findTalker,
+  validateEmail, 
+  validatePassword,
+} = require('./middleware/validate');
 const {
   HTTP_OK_STATUS,
   HTTP_ERROR_STATUS,
-  HTTP_NOT_FOUND,
   PORT,
+  TALKER_JSON,
 } = require('./utils/variables');
-const readJson = require('./utils/fs/readJson');
+const { readJson }= require('./utils/fsUtils');
 
 const app = express();
 app.use(express.json());
 
-const talkerJson = './src/talker.json';
-
-const findTalker = async (req, res, next) => {
-  const { id } = req.params;
-  const talkers = await readJson(talkerJson);
-  const talkerFound = talkers.find((talker) => talker.id === Number(id));
-  
-  if (!talkerFound) {
-    return res.status(HTTP_NOT_FOUND).send({ 
-      message: 'Pessoa palestrante não encontrada', 
-    });
-  }
-  res.locals = talkerFound;
-  next();
-};
-
-// não remova esse endpoint, e para o avaliador funcionar
+// não remova esse endpoint, é para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
 app.get('/talker', async (_req, res) => {
   try {
-    const talkers = await readJson(talkerJson);
+    const talkers = await readJson(TALKER_JSON);
     return res.status(HTTP_OK_STATUS).send(talkers || []);
   } catch (err) {
     return res.status(HTTP_ERROR_STATUS);
@@ -48,6 +37,13 @@ app.get('/talker/:id', findTalker, (_req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log('Online');
+app.post('/login', validateEmail, validatePassword, (_req, res) => {
+  try {
+    const token = `${Math.random().toString(16).substring(2)}uid`;
+    return res.status(HTTP_OK_STATUS).send({ token });
+  } catch (err) {
+    return res.status(HTTP_ERROR_STATUS);
+  }
 });
+
+app.listen(PORT, () => console.log('Online'));
