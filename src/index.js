@@ -1,4 +1,5 @@
 const express = require('express');
+const { v4: uuid } = require('uuid');
 const { 
   findTalker,
   validateEmail, 
@@ -40,7 +41,7 @@ app.get('/talker/:id', findTalker, (_req, res) => {
 
 app.post('/login', validateEmail, validatePassword, (_req, res) => {
   try {
-    const token = `${Math.random().toString(16).substring(2)}uid`;
+    const token = uuid().replace(/-/, '').substring(0, 16);
     return res.status(HTTP_OK_STATUS).send({ token });
   } catch (err) {
     return res.status(HTTP_ERROR_STATUS).send({ error: err.message });
