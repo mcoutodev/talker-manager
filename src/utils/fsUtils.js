@@ -9,4 +9,4 @@ const readJson = async (path) => {
   }
 };
 
-module.exports = readJson;
+module.exports = { readJson };
