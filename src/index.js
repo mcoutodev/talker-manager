@@ -10,7 +10,7 @@ const {
   PORT,
   TALKER_JSON,
 } = require('./utils/variables');
-const { readJson }= require('./utils/fsUtils');
+const { readJson } = require('./utils/fsUtils');
 
 const app = express();
 app.use(express.json());
