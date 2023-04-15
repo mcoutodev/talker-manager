@@ -10,4 +10,13 @@ const readJson = async (path) => {
   }
 };
 
-module.exports = { readJson };
+// Realiza a escrita de arquivos JSON
+const writeJson = async (path, data) => {
+  try {
+    await fs.writeFile(path, JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+module.exports = { readJson, writeJson };
