@@ -1,17 +1,22 @@
 const express = require('express');
+require('express-async-errors');
 const { v4: uuid } = require('uuid');
-const { 
-  findTalker,
-  validateEmail, 
-  validatePassword,
-} = require('./middleware/validate');
+
+// Utilitários
+const { readJson } = require('./utils/fsUtils');
 const {
   HTTP_OK_STATUS,
   HTTP_ERROR_STATUS,
   PORT,
   TALKER_JSON,
 } = require('./utils/variables');
-const { readJson } = require('./utils/fsUtils');
+
+// Middlewares
+const { 
+  findTalker,
+  validateEmail, 
+  validatePassword,
+} = require('./middlewares/validate');
 
 const app = express();
 
@@ -22,30 +27,31 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
+// GET /talker
 app.get('/talker', async (_req, res) => {
-  try {
     const talkers = await readJson(TALKER_JSON);
     return res.status(HTTP_OK_STATUS).send(talkers || []);
-  } catch (err) {
-    return res.status(HTTP_ERROR_STATUS).send({ error: err.message });
-  }
 });
 
+// GET /talker/id
 app.get('/talker/:id', findTalker, (_req, res) => {
-  try {
     return res.status(HTTP_OK_STATUS).send(res.locals);
-  } catch (err) {
-    return res.status(HTTP_ERROR_STATUS).send({ error: err.message });
-  }
 });
 
+// POST /login
 app.post('/login', validateEmail, validatePassword, (_req, res) => {
-  try {
     const token = uuid().replace(/-/, '').substring(0, 16);
     return res.status(HTTP_OK_STATUS).send({ token });
-  } catch (err) {
-    return res.status(HTTP_ERROR_STATUS).send({ error: err.message });
-  }
+});
+
+// Middlewares de erro
+app.use((err, _req, _res, next) => {
+  console.error(err.stack);
+  next(err);
+});
+
+app.use((err, _req, res, _next) => {
+  res.status(HTTP_ERROR_STATUS).send({ error: err.message });
 });
 
 app.listen(PORT, () => console.log('Online'));
