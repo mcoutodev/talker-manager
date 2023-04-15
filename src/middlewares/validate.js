@@ -89,7 +89,7 @@ const validateTalk = (req, res, next) => {
 const validateWatchedAt = (req, res, next) => {
   const { watchedAt } = req.body.talk;
   const dateRegex = (
-    /^(0[1-9]|[12]\d|3[01])[\/\-\.](0[1-9]|1[0-2])[\/](19|20)\d{2}$/
+    /^(0[1-9]|[12]\d|3[01])[/\-.](0[1-9]|1[0-2])[/](19|20)\d{2}$/
   );
 
   if (!watchedAt) {
@@ -106,7 +106,7 @@ const validateWatchedAt = (req, res, next) => {
 const validateRate = (req, res, next) => {
   const { rate } = req.body.talk;
 
-  if (!rate && rate !== 0) {
+  if (!('rate' in req.body.talk)) {
     return res.status(HTTP_BAD_REQUEST)
       .send({ message: 'O campo "rate" é obrigatório' });
   }
