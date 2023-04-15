@@ -1,8 +1,9 @@
 const HTTP_OK_STATUS = 200;
-const HTTP_ERROR_STATUS = 500;
+const HTTP_CREATED_STATUS = 201;
 const HTTP_NOT_FOUND = 404;
 const HTTP_BAD_REQUEST = 400;
-const HTTP_CREATED_STATUS = 201;
+const HTTP_UNAUTHORIZED = 401;
+const HTTP_ERROR_STATUS = 500;
 const PORT = process.env.PORT || '3001';
 const TALKER_JSON = './src/talker.json';
 
@@ -11,6 +12,7 @@ module.exports = {
   HTTP_ERROR_STATUS,
   HTTP_CREATED_STATUS,
   HTTP_NOT_FOUND,
+  HTTP_UNAUTHORIZED,
   HTTP_BAD_REQUEST,
   PORT,
   TALKER_JSON,
