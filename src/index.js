@@ -29,19 +29,18 @@ app.get('/', (_request, response) => {
 
 // GET /talker
 app.get('/talker', async (_req, res) => {
-    const talkers = await readJson(TALKER_JSON);
-    return res.status(HTTP_OK_STATUS).send(talkers || []);
+  const talkers = await readJson(TALKER_JSON);
+  return res.status(HTTP_OK_STATUS).send(talkers || []);
 });
 
 // GET /talker/id
-app.get('/talker/:id', findTalker, (_req, res) => {
-    return res.status(HTTP_OK_STATUS).send(res.locals);
-});
+app.get('/talker/:id', findTalker, (_req, res) => res.status(HTTP_OK_STATUS)
+  .send(res.locals));
 
 // POST /login
 app.post('/login', validateEmail, validatePassword, (_req, res) => {
-    const token = uuid().replace(/-/, '').substring(0, 16);
-    return res.status(HTTP_OK_STATUS).send({ token });
+  const token = uuid().replace(/-/, '').substring(0, 16);
+  return res.status(HTTP_OK_STATUS).send({ token });
 });
 
 // Middlewares de erro
