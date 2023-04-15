@@ -3,6 +3,7 @@ const {
   HTTP_OK_STATUS, HTTP_CREATED_STATUS, TALKER_JSON, HTTP_NO_CONTENT,
 } = require('../utils/variables');
 const findTalker = require('../middlewares/findTalker');
+const queryTalkers = require('../middlewares/queryTalkers');
 const { 
   validateToken,
   validateAge, 
@@ -22,9 +23,10 @@ router.get('/', async (_req, res) => {
   res.status(HTTP_OK_STATUS).send(talkers || []);
 });
 
-// GET /talker/:id
-router.get('/:id', findTalker, (req, res) => res.status(HTTP_OK_STATUS)
-  .send(req.locals));
+// GET /talker/search
+router.get('/search', validateToken, queryTalkers, (req, res) => {
+  res.status(HTTP_OK_STATUS).send(req.locals);
+});
 
 // POST /talker
 router.post('/', 
@@ -43,6 +45,10 @@ router.post('/',
     
     res.status(HTTP_CREATED_STATUS).send(newTalker);
   });
+
+// GET /talker/:id
+router.get('/:id', findTalker, (req, res) => res.status(HTTP_OK_STATUS)
+  .send(req.locals));
 
 // PUT /talker/:id
 router.put('/:id', 
@@ -64,7 +70,7 @@ router.put('/:id',
     });
 
     await writeJson(TALKER_JSON, updatedTalkers);
-    return res.status(HTTP_OK_STATUS).send(updatedTalker);
+    res.status(HTTP_OK_STATUS).send(updatedTalker);
   });
 
 // DELETE /talker/:id
@@ -72,7 +78,7 @@ router.delete('/:id', validateToken, findTalker, async (req, res) => {
   const talkers = await readJson(TALKER_JSON);
   const updatedTalkers = talkers.filter(({ id }) => id !== req.locals.id);
   await writeJson(TALKER_JSON, updatedTalkers);
-  return res.status(HTTP_NO_CONTENT).end();
+  res.status(HTTP_NO_CONTENT).end();
 });
 
 module.exports = router;
