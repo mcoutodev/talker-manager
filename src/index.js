@@ -1,22 +1,14 @@
 const express = require('express');
 require('express-async-errors');
-const { v4: uuid } = require('uuid');
-
+// Rotas
+const talkerRouter = require('./routes/talkerRouter');
+const loginRouter = require('./routes/loginRouter');
 // Utilitários
-const { readJson } = require('./utils/fsUtils');
 const {
   HTTP_OK_STATUS,
   HTTP_ERROR_STATUS,
   PORT,
-  TALKER_JSON,
 } = require('./utils/variables');
-
-// Middlewares
-const { 
-  findTalker,
-  validateEmail, 
-  validatePassword,
-} = require('./middlewares/validate');
 
 const app = express();
 
@@ -27,21 +19,9 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-// GET /talker
-app.get('/talker', async (_req, res) => {
-  const talkers = await readJson(TALKER_JSON);
-  return res.status(HTTP_OK_STATUS).send(talkers || []);
-});
-
-// GET /talker/id
-app.get('/talker/:id', findTalker, (_req, res) => res.status(HTTP_OK_STATUS)
-  .send(res.locals));
-
-// POST /login
-app.post('/login', validateEmail, validatePassword, (_req, res) => {
-  const token = uuid().replace(/-/, '').substring(0, 16);
-  return res.status(HTTP_OK_STATUS).send({ token });
-});
+// Roteamento dos endpoints
+app.use('/talker', talkerRouter);
+app.use('/login', loginRouter);
 
 // Middlewares de erro
 app.use((err, _req, _res, next) => {
