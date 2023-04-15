@@ -1,6 +1,6 @@
 const express = require('express');
 const { 
-  HTTP_OK_STATUS, HTTP_CREATED_STATUS, TALKER_JSON,
+  HTTP_OK_STATUS, HTTP_CREATED_STATUS, TALKER_JSON, HTTP_NO_CONTENT,
 } = require('../utils/variables');
 const findTalker = require('../middlewares/findTalker');
 const { 
@@ -22,7 +22,7 @@ router.get('/', async (_req, res) => {
   res.status(HTTP_OK_STATUS).send(talkers || []);
 });
 
-// GET /talker/id
+// GET /talker/:id
 router.get('/:id', findTalker, (req, res) => res.status(HTTP_OK_STATUS)
   .send(req.locals));
 
@@ -44,7 +44,7 @@ router.post('/',
     res.status(HTTP_CREATED_STATUS).send(newTalker);
   });
 
-// PUT /talker/id
+// PUT /talker/:id
 router.put('/:id', 
   validateToken,
   findTalker,
@@ -61,10 +61,18 @@ router.put('/:id',
         return updatedTalker;
       }
       return talker;
-    }); 
+    });
 
     await writeJson(TALKER_JSON, updatedTalkers);
     return res.status(HTTP_OK_STATUS).send(updatedTalker);
   });
+
+// DELETE /talker/:id
+router.delete('/:id', validateToken, findTalker, async (req, res) => {
+  const talkers = await readJson(TALKER_JSON);
+  const updatedTalkers = talkers.filter(({ id }) => id !== req.locals.id);
+  await writeJson(TALKER_JSON, updatedTalkers);
+  return res.status(HTTP_NO_CONTENT).end();
+});
 
 module.exports = router;
