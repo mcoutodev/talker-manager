@@ -44,4 +44,27 @@ router.post('/',
     res.status(HTTP_CREATED_STATUS).send(newTalker);
   });
 
+// PUT /talker/id
+router.put('/:id', 
+  validateToken,
+  findTalker,
+  validateAge,
+  validateName, 
+  validateTalk, 
+  validateRate, 
+  validateWatchedAt,
+  async (req, res) => {
+    const talkers = await readJson(TALKER_JSON);
+    const updatedTalker = { ...req.body, id: req.locals.id };
+    const updatedTalkers = talkers.map((talker) => {
+      if (talker.id === req.locals.id) {
+        return updatedTalker;
+      }
+      return talker;
+    }); 
+
+    await writeJson(TALKER_JSON, updatedTalkers);
+    return res.status(HTTP_OK_STATUS).send(updatedTalker);
+  });
+
 module.exports = router;
