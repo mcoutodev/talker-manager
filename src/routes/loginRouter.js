@@ -7,7 +7,7 @@ const router = express.Router();
 
 // POST /login
 router.post('/', validateEmail, validatePassword, (_req, res) => {
-  const token = uuid().replace(/-/, '').substring(0, 16);
+  const token = uuid().replace(/-/g, '').substring(0, 16);
   res.status(HTTP_OK_STATUS).send({ token });
 });
 
