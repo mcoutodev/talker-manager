@@ -5,9 +5,7 @@ const talkerRouter = require('./routes/talkerRouter');
 const loginRouter = require('./routes/loginRouter');
 // Utilitários
 const {
-  HTTP_OK_STATUS,
-  HTTP_ERROR_STATUS,
-  PORT,
+  HTTP_OK_STATUS, HTTP_ERROR_STATUS, PORT,
 } = require('./utils/variables');
 
 const app = express();

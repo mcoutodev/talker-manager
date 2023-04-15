@@ -1,8 +1,5 @@
 const { readJson } = require('../utils/fsUtils');
-const { 
-  HTTP_NOT_FOUND, 
-  TALKER_JSON,
-} = require('../utils/variables');
+const { HTTP_NOT_FOUND, TALKER_JSON } = require('../utils/variables');
 
 // Tenta encontrar um palestrante pelo ID
 const findTalker = async (req, res, next) => {
