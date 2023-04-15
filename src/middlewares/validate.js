@@ -5,6 +5,7 @@ const {
 } = require('../utils/variables');
 const { readJson } = require('../utils/fsUtils');
 
+// Tenta encontrar um palestrante pelo ID
 const findTalker = async (req, res, next) => {
   const { id } = req.params;
   const talkers = await readJson(TALKER_JSON);
@@ -18,6 +19,7 @@ const findTalker = async (req, res, next) => {
   next();
 };
 
+// Verifica se um email é válido
 const validateEmail = (req, res, next) => {
   const { email } = req.body;
   const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
@@ -33,6 +35,7 @@ const validateEmail = (req, res, next) => {
   next();
 };
 
+// Verifica se uma senha é válida
 const validatePassword = (req, res, next) => {
   const { password } = req.body;
 
