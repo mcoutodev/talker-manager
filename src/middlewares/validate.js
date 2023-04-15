@@ -1,23 +1,4 @@
-const { 
-  HTTP_NOT_FOUND, 
-  HTTP_BAD_REQUEST, 
-  TALKER_JSON,
-} = require('../utils/variables');
-const { readJson } = require('../utils/fsUtils');
-
-// Tenta encontrar um palestrante pelo ID
-const findTalker = async (req, res, next) => {
-  const { id } = req.params;
-  const talkers = await readJson(TALKER_JSON);
-  const talkerFound = talkers.find((talker) => talker.id === Number(id));
-  
-  if (!talkerFound) {
-    return res.status(HTTP_NOT_FOUND)
-      .send({ message: 'Pessoa palestrante não encontrada' });
-  }
-  res.locals = talkerFound;
-  next();
-};
+const { HTTP_BAD_REQUEST } = require('../utils/variables');
 
 // Verifica se um email é válido
 const validateEmail = (req, res, next) => {
@@ -50,4 +31,4 @@ const validatePassword = (req, res, next) => {
   next();
 };
 
-module.exports = { findTalker, validateEmail, validatePassword };
+module.exports = { validateEmail, validatePassword };
