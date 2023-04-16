@@ -8,10 +8,11 @@ const {
   validateToken,
   validateAge, 
   validateName,
-  validateRate, 
+  validateTalkerRate, 
   validateTalk, 
-  validateWatchedAt,
+  validateTalkerWatchedAt,
   validateQueryRate,
+  validateQueryDate,
 } = require('../middlewares/validate');
 const { readJson, writeJson } = require('../utils/fsUtils');
 
@@ -27,7 +28,8 @@ router.get('/', async (_req, res) => {
 // GET /talker/search
 router.get('/search', 
   validateToken, 
-  validateQueryRate, 
+  validateQueryRate,
+  validateQueryDate,
   queryTalkers, 
   (req, res) => {
     res.status(HTTP_OK_STATUS).send(req.locals);
@@ -39,8 +41,8 @@ router.post('/',
   validateAge,
   validateName, 
   validateTalk, 
-  validateRate, 
-  validateWatchedAt,
+  validateTalkerRate, 
+  validateTalkerWatchedAt,
   async (req, res) => {
     const talkers = await readJson(TALKER_JSON);
     const newTalker = { ...req.body, id: talkers.length + 1 };
@@ -62,8 +64,8 @@ router.put('/:id',
   validateAge,
   validateName, 
   validateTalk, 
-  validateRate, 
-  validateWatchedAt,
+  validateTalkerRate, 
+  validateTalkerWatchedAt,
   async (req, res) => {
     const talkers = await readJson(TALKER_JSON);
     const updatedTalker = { ...req.body, id: req.locals.id };
