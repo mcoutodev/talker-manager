@@ -105,16 +105,36 @@ const validateWatchedAt = (req, res, next) => {
 
 const validateRate = (req, res, next) => {
   const { rate } = req.body.talk;
+  const numRate = Number(rate);
 
   if (!('rate' in req.body.talk)) {
     return res.status(HTTP_BAD_REQUEST)
       .send({ message: 'O campo "rate" é obrigatório' });
   }
-  if (!Number.isInteger(rate) || Number(rate) > 5 || Number(rate) < 1) {
-    return res.status(HTTP_BAD_REQUEST)
-      .send({ 
-        message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
-      });
+  if (!Number.isInteger(numRate) 
+    || Number(numRate) > 5 
+    || Number(numRate) < 1) {
+    return res.status(HTTP_BAD_REQUEST).send({
+      message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
+    });
+  }
+  next();
+};
+
+// Valida parãmetros de uma query
+const validateQueryRate = (req, res, next) => {
+  const { rate } = req.query;
+  const numRate = Number(rate);
+
+  if (rate === undefined) {
+    return next();
+  }
+  if (!Number.isInteger(numRate) 
+    || Number(numRate) > 5 
+    || Number(numRate) < 1) {
+    return res.status(HTTP_BAD_REQUEST).send({
+      message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
+    });
   }
   next();
 };
@@ -128,4 +148,5 @@ module.exports = {
   validateTalk,
   validateWatchedAt,
   validateToken,
+  validateQueryRate,
 };

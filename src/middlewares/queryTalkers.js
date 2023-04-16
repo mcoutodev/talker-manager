@@ -2,24 +2,40 @@ const { readJson } = require('../utils/fsUtils');
 const { TALKER_JSON } = require('../utils/variables');
 
 // Query talkers using params sent in the request
+const hasKeys = (object) => {
+  return Object.keys(object).some((key) => (
+    ['q', 'rate'].find((element) => element === key))
+  );
+};
+
 const queryByName = (query, talkers) => {
   if (query === '') {
     return talkers;
   }
-  return talkers.filter((talker) => (
-    talker.name.toLowerCase().includes(query.toLowerCase())
+  return talkers.filter(({ name }) => (
+    name.toLowerCase().includes(query.toLowerCase())
   ));
 };
 
+const queryByRate = (query, talkers) => {
+  return talkers.filter(({ talk }) => talk.rate === Number(query));
+};
+
 const queryTalkers = async (req, _res, next) => {
-  const { q } = req.query;
+  const { q, rate } = req.query;
+  const talkers = await readJson(TALKER_JSON);
+  
+  req.locals = talkers;
 
   if (q !== undefined) {
-    const talkers = await readJson(TALKER_JSON);
-    req.locals = queryByName(q, talkers);
-    next();
+    req.locals = queryByName(q, req.locals);
+  } 
+  if (rate !== undefined) {
+    req.locals = queryByRate(rate, req.locals);
+  } 
+  if (!hasKeys(req.query)) {
+    req.locals = [];
   }
-  req.locals = [];
   next();
 };
 

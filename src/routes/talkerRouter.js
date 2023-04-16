@@ -11,6 +11,7 @@ const {
   validateRate, 
   validateTalk, 
   validateWatchedAt,
+  validateQueryRate,
 } = require('../middlewares/validate');
 const { readJson, writeJson } = require('../utils/fsUtils');
 
@@ -24,9 +25,13 @@ router.get('/', async (_req, res) => {
 });
 
 // GET /talker/search
-router.get('/search', validateToken, queryTalkers, (req, res) => {
-  res.status(HTTP_OK_STATUS).send(req.locals);
-});
+router.get('/search', 
+  validateToken, 
+  validateQueryRate, 
+  queryTalkers, 
+  (req, res) => {
+    res.status(HTTP_OK_STATUS).send(req.locals);
+  });
 
 // POST /talker
 router.post('/', 
