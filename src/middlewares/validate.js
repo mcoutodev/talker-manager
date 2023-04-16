@@ -146,6 +146,23 @@ const validateQueryDate = (req, res, next) => {
   next();
 };
 
+// Valida o PATCH
+const validatePatchRate = (req, res, next) => {
+  const { rate } = req.body;
+
+  if (!('rate' in req.body)) {
+    return res.status(HTTP_BAD_REQUEST).send({
+      message: 'O campo "rate" é obrigatório',
+    });
+  }
+  if (!isRateNumber(rate)) {
+    return res.status(HTTP_BAD_REQUEST).send({
+      message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
+    });
+  }
+  next();
+};
+
 module.exports = { 
   validateEmail, 
   validatePassword,
@@ -157,4 +174,5 @@ module.exports = {
   validateToken,
   validateQueryRate,
   validateQueryDate,
+  validatePatchRate,
 };

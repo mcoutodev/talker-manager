@@ -13,6 +13,7 @@ const {
   validateTalkerWatchedAt,
   validateQueryRate,
   validateQueryDate,
+  validatePatchRate,
 } = require('../middlewares/validate');
 const { readJson, writeJson } = require('../utils/fsUtils');
 
@@ -51,6 +52,25 @@ router.post('/',
     await writeJson(TALKER_JSON, talkers);
     
     res.status(HTTP_CREATED_STATUS).send(newTalker);
+  });
+
+// PATCH /talker/rate/:id
+router.patch('/rate/:id', 
+  validateToken, 
+  validatePatchRate,
+  findTalker, 
+  async (req, res) => {
+    const talkers = await readJson(TALKER_JSON);
+    const updatedTalkers = talkers.map((talker) => {
+      if (talker.id === req.locals.id) {
+        talker.talk.rate = req.body.rate;
+        return talker;
+      }
+      return talker;
+    });
+    
+    await writeJson(TALKER_JSON, updatedTalkers);
+    res.status(HTTP_NO_CONTENT).end();
   });
 
 // GET /talker/:id
