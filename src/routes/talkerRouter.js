@@ -63,7 +63,8 @@ router.patch('/rate/:id',
     const talkers = await readJson(TALKER_JSON);
     const updatedTalkers = talkers.map((talker) => {
       if (talker.id === req.locals.id) {
-        talker.talk.rate = req.body.rate;
+        const { talk } = talker;
+        talk.rate = req.body.rate;
         return talker;
       }
       return talker;
