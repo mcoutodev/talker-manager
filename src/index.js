@@ -1,8 +1,8 @@
 const express = require('express');
 require('express-async-errors');
 // Rotas
-const talkerRouter = require('./routes/talkerRouter');
-const loginRouter = require('./routes/loginRouter');
+const talkerRoutes = require('./routes/talkerRoutes');
+const loginRoutes = require('./routes/loginRoutes');
 // Utilitários
 const {
   HTTP_OK_STATUS, HTTP_ERROR_STATUS, PORT,
@@ -18,8 +18,8 @@ app.get('/', (_request, response) => {
 });
 
 // Roteamento dos endpoints
-app.use('/talker', talkerRouter);
-app.use('/login', loginRouter);
+app.use('/talker', talkerRoutes);
+app.use('/login', loginRoutes);
 
 // Middlewares de erro
 app.use((err, _req, _res, next) => {

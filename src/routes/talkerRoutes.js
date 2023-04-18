@@ -1,4 +1,5 @@
 const express = require('express');
+
 const { 
   HTTP_OK_STATUS, HTTP_CREATED_STATUS, TALKER_JSON, HTTP_NO_CONTENT,
 } = require('../utils/variables');
@@ -16,6 +17,7 @@ const {
   validatePatchRate,
 } = require('../middlewares/validate');
 const { readJson, writeJson } = require('../utils/fsUtils');
+const talkersDB = require('../db/talkersDB');
 
 // Usa o middleware Router
 const router = express.Router();
@@ -24,6 +26,26 @@ const router = express.Router();
 router.get('/', async (_req, res) => {
   const talkers = await readJson(TALKER_JSON);
   res.status(HTTP_OK_STATUS).send(talkers || []);
+});
+
+// GET /talker/db
+router.get('/db', async (_req, res) => {
+  const [result] = await talkersDB.findAll();
+  const people = result.map((person) => {
+    const updatedPerson = {
+      ...person,
+      talk: {
+        watchedAt: person.talk_watched_at,
+        rate: person.talk_rate,
+      },
+    };
+
+    delete updatedPerson.talk_watched_at;
+    delete updatedPerson.talk_rate;
+    return updatedPerson;
+  });
+
+  res.status(HTTP_OK_STATUS).send(people || []);
 });
 
 // GET /talker/search
